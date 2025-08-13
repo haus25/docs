@@ -306,7 +306,7 @@ mapping(address => bool) public globalWhitelist;         // address => authorize
 - Global whitelist provides extensive power over all events to Curation Agents. This will be improved in a V2/V3 release by dockerizing agents in TEE environment with contract registration on a per-worker/per-instance basis.
 
 ### Trust assumptions
-- Creator must trust delegate-agent not to perform malicious actions. The TEE<>per-worker-registration<>dynamic-address pattern can ensure action-specific confinment for the multi-agent system.
+- Creator must trust delegate-agent not to perform malicious actions. The ´TEE<>per-worker-registration<>dynamic-address´ pattern can ensure action-specific confinment for the multi-agent system.
 - No built-in dispute resolution for delegation conflicts, this will be resolved with the UUPS pattern described above.
 
 The EventManager design prioritizes flexibility and gas efficiency while maintaining security through centralized permission validation. The upgrade capability allows for future improvements but introduces governance risks that will be fixed in future iterations preceding main net deployment.
