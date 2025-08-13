@@ -1,6 +1,6 @@
 ---
 title: 'Other Contracts'
-description: 'LiveTipping, Distributor, EventStation, and utility contracts in the RTA ecosystem'
+description: 'LiveTipping, Distributor, Curation, and utility contracts in the RTA protocol'
 icon: 'puzzle-piece'
 ---
 
@@ -213,82 +213,6 @@ function enableCurationFromContract(
 }
 ```
 
-## EventStation Contract
-
-### Infrastructure Service Management
-EventStation provides a framework for managing infrastructure services across events:
-
-```solidity
-contract EventStation is Initializable, OwnableUpgradeable, UUPSUpgradeable,
-                        ReentrancyGuardUpgradeable {
-    
-    struct StationData {
-        address operator;
-        bool active;
-        uint256 totalFundsReceived;
-        uint256 totalFundsWithdrawn;
-        uint256 operatorFee;  // Percentage fee (1-20)
-        string description;
-        uint256 startDate;
-        uint256 endDate;
-    }
-    
-    mapping(uint256 => StationData) public eventStations;
-    mapping(address => uint256[]) public operatorEvents;
-    mapping(uint256 => mapping(address => uint256)) public pendingBalances;
-}
-```
-
-### Station Lifecycle Management
-
-```mermaid
-graph TB
-    subgraph "Station Setup"
-        Creator[Event Creator] --> ES[EventStation]
-        ES --> Setup[initializeStation]
-        Setup --> Config[Configure operator, fee, dates]
-    end
-    
-    subgraph "Station Operation"
-        Funds[External Funds] --> ES
-        ES --> Split[Split by operator fee]
-        Split --> OpBalance[Operator Balance]
-        Split --> CreatorBalance[Creator Balance]
-    end
-    
-    subgraph "Station Withdrawal"
-        OpBalance --> OpWithdraw[Operator Withdraw]
-        CreatorBalance --> CreatorWithdraw[Creator Withdraw]
-    end
-    
-    style ES fill:#e1f5fe
-    style Split fill:#fff3e0
-```
-
-### Fee Distribution Model
-
-```solidity
-function receiveFundsForEvent(uint256 eventId) external payable stationActive(eventId) {
-    address operator = eventStations[eventId].operator;
-    
-    // Calculate fee split
-    uint256 operatorAmount = (msg.value * eventStations[eventId].operatorFee) / 100;
-    uint256 remainingAmount = msg.value - operatorAmount;
-    
-    // Update balances
-    if (operatorAmount > 0) {
-        pendingBalances[eventId][operator] += operatorAmount;
-    }
-    if (remainingAmount > 0) {
-        IEventFactory.EventData memory eventData = IEventFactory(eventFactoryAddress).getEvent(eventId);
-        pendingBalances[eventId][eventData.creator] += remainingAmount;
-    }
-    
-    eventStations[eventId].totalFundsReceived += msg.value;
-    emit FundsReceived(eventId, operator, msg.value);
-}
-```
-
 ## CreationWrapper Contract
 
 ### Atomic Operations Utility
@@ -461,14 +385,12 @@ struct EventTippingData {
 ### Specialized Functionality
 1. **LiveTipping**: Optimized for high-frequency, small-value transactions
 2. **Distributor**: Handles complex revenue calculations and multi-party payments
-3. **EventStation**: Provides infrastructure service monetization framework
-4. **CreationWrapper**: Improves user experience through transaction batching
+3. **CreationWrapper**: Improves user experience through transaction batching
 
 ### Modular Integration
 1. **Loose Coupling**: Contracts can be upgraded independently
 2. **Clear Interfaces**: Well-defined interaction patterns
-3. **Fallback Safety**: Graceful degradation when optional contracts unavailable
-4. **Event-Driven**: Comprehensive event logging for off-chain integration
+3. **Event-Driven**: Comprehensive event logging for off-chain integration
 
 ### Upgrade Flexibility
 1. **UUPS Pattern**: Core contracts can evolve with protocol needs
@@ -476,21 +398,4 @@ struct EventTippingData {
 3. **Migration Support**: Old contract state can be preserved during upgrades
 4. **Emergency Controls**: Pause and emergency withdrawal capabilities
 
-## Risk Considerations
-
-### Economic Risks
-- **MEV Opportunities**: Last-second tip submissions could be front-run
-- **Revenue Leakage**: Complex distribution logic increases error risk
-- **Fee Stacking**: Multiple fee layers reduce net creator revenue
-
-### Technical Risks  
-- **Oracle Dependencies**: Reserve price validation relies on accurate tip tracking
-- **Upgrade Coordination**: Multiple UUPS contracts require synchronized upgrades
-- **Gas Price Volatility**: High gas costs could make small tips uneconomical
-
-### Operational Risks
-- **Operator Dependency**: EventStation relies on external operator reliability
-- **Withdrawal Coordination**: Manual distribution triggers create UX friction
-- **State Consistency**: Cross-contract state synchronization complexity
-
-The supporting contracts in the RTA protocol provide essential specialized functionality while maintaining the modular architecture's flexibility and upgrade capabilities.
+The supporting contracts in the RTA protocol provide specialized functionality while maintaining the modular architecture's flexibility and upgrade capabilities.

@@ -232,21 +232,15 @@ function getAllTicketKiosks() external view returns (uint256[] memory, address[]
 4. **Flexible Metadata**: Dynamic URI updates through authorized managers
 5. **Creator-Friendly**: Simple interface with complex logic handled internally
 
-## Risk Considerations
+## Testnet Considerations
 
-### Centralization Risks
-- EventFactory cannot be upgraded, making it a critical single point of failure
-- Owner controls treasury receiver and can update contract addresses
-- EventManager authorization is binary - either full access or none
-
-### Economic Risks
-- Reserve price validation depends on external LiveTipping contract accuracy
-- No mechanism to handle edge cases where highest tipper address becomes invalid
-- Event finalization is irreversible with no dispute resolution
+### Centralization
+- Owner controls treasury receiver and can update contract addresses, this will be decentralized through multi-sig on main net.
+- EventManager authorization is binary - either full access or none - this will be improved through dynamic, deterministic proxies.
 
 ### Technical Limitations
-- 96-bit limitations on dates and prices may become insufficient over time
-- String storage for metadata and categories is not gas-optimized
-- No batch operations for multiple event management
+- 96-bit limitations on dates and prices may become insufficient over time, storage will be expanded before main net release, after additional bytecode size optimizations (read below).
+- String storage for metadata and categories is not gas-optimized - this will substantially reduce EventFactory's size, allowing further improvements (see storage limitation above)
+- No batch operations for multiple event management. This can be improved in a v2/v3, once implemented app-wide account abstraction.
 
-The EventFactory's design prioritizes simplicity and gas efficiency over flexibility, making it suitable for the core use case while potentially limiting advanced scenarios.
+As it is at its first release, current EventFactory's design prioritizes flexibility - this allows us to iterate and scale faster before landing to a more stable, governance-led release of the protocol.

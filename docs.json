@@ -9,7 +9,13 @@
   },
   "customCSS": "style.css",
 
-  "favicon": "/favicon.svg",
+  "favicon": {
+    "light": "/favicon.svg",
+    "dark": "/favicon.svg"
+  },
+  "styling": {
+    "codeblocks": "dark"
+  },
   "navigation": {
     "tabs": [
       {

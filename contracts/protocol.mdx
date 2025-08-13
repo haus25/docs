@@ -188,22 +188,3 @@ function sendTip(uint256 eventId, string memory message)
 3. **Gas-Optimized Design**: Strategic use of storage packing and minimal proxies
 4. **Deterministic Addressing**: CREATE2 deployment for predictable contract addresses
 5. **Comprehensive Permission System**: Granular delegation without compromising security
-
-## Potential Risk Areas
-
-### Smart Contract Risks
-- **Upgrade Governance**: UUPS proxies require careful upgrade procedures
-- **Oracle Dependencies**: Reserve price evaluation relies on accurate tip tracking
-- **Gas Price Volatility**: Complex operations may become expensive during network congestion
-
-### Economic Risks
-- **MEV Opportunities**: Last-minute tip sniping could be exploited
-- **Liquidity Fragmentation**: Per-event revenue splitting may reduce individual pool sizes
-- **Creator Dependency**: High reliance on event creators for proper configuration
-
-### Technical Limitations
-- **Block Time Dependency**: ~12 second block times limit real-time responsiveness
-- **Storage Growth**: Event history accumulation increases read costs over time
-- **Cross-Event Coordination**: Limited mechanisms for multi-event interactions
-
-The protocol design prioritizes modularity and upgradeability to address these risks through iterative improvements while maintaining backward compatibility with existing events.

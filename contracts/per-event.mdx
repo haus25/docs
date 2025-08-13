@@ -419,24 +419,11 @@ struct OptimizedTicketData {
 4. **Transparent Tracking**: All revenue flows are recorded on-chain
 5. **Flexible Fee Structures**: Different rates for different service levels
 
-## Limitations and Risks
+## Limitations
 
-### Deployment Costs
+- CREATE2 deployment requires salt management.
+- Failed deployments waste gas, deployment script needs refinement.
+- Difficult to upgrade individual event contracts, altough modular, contracts are strictly interdependent.
+- No mechanism for dispute resolution in service provider conflicts, as mentioned elsewhere, this will be resolved through protocol-wide, enforceable governance (community-led dispute resolution and multi-sigs).
 
-- High gas costs for full event setup (~4.3M gas)
-- CREATE2 deployment requires careful salt management
-- Failed deployments waste gas without recovery
-
-### Contract Complexity
-
-- Each event multiplies the attack surface
-- Inconsistent implementations across events
-- Difficult to upgrade individual event contracts
-
-### Economic Risks
-
-- Immediate ticket revenue distribution reduces protocol TVL
-- Curation fee extraction reduces creator earnings
-- No mechanism for dispute resolution in service provider conflicts
-
-The per-event contract architecture provides the modularity and customization necessary for diverse event types while maintaining integration with the broader protocol ecosystem. This design choice prioritizes event creator autonomy and service provider flexibility over protocol-wide optimization.
+Currently, the per-event contract architecture provides the modularity and customization necessary for diverse event types while maintaining integration with the broader protocol ecosystem. This design choice prioritizes event creator autonomy and service provider flexibility over protocol-wide optimization.

@@ -383,12 +383,12 @@ The three-tier system provides defense in depth:
 4. **Upgrade Capability**: UUPS proxies for core contracts
 5. **Predictable Addresses**: CREATE2 for deterministic deployment
 
-### Limitations
+### Current Limitations (can be improved)
 
 1. **Immutable Delegations**: Cannot modify or revoke specific delegations
 2. **Runtime Overhead**: Delegatecall adds ~2,100 gas per proxy call
-3. **Upgrade Risks**: UUPS proxies centralize upgrade authority
+3. **Upgrade Risks**: UUPS proxies centralize upgrade authority, this will be decentralized through community governance on main net
 4. **Storage Fragmentation**: Each proxy maintains separate storage context
-5. **Global Whitelist Power**: Platform-wide permissions concentrate authority
+5. **Global Whitelist Power**: Platform-wide permissions concentrate authority, this will be decentralized through community governance on main net
 
 The delegation and proxy patterns in the RTA protocol represent a sophisticated balance between gas efficiency, security, and operational flexibility. The system enables cost-effective permission management while maintaining the security guarantees necessary for a financial protocol.
