@@ -302,7 +302,7 @@ mapping(address => bool) public globalWhitelist;         // address => authorize
 - UUPS upgrades could introduce bugs affecting all events, this will be fixed easily on main net through community-led dispute resolution and multi-sigs. In testnet, in case of upgrade-specific bugs or disputes, can be mitigated by swapping the upgrade-proxy with the base implementation.
 - Owner has unilateral upgrade authority without timelock, this will be decentralized through community governance on main net.
 
-### Authorization Risks
+### Authorization Risk
 - Global whitelist provides extensive power over all events to Curation Agents. This will be improved in a V2/V3 release by dockerizing agents in TEE environment with contract registration on a per-worker/per-instance basis.
 
 ### Trust assumptions
