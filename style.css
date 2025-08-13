@@ -1,0 +1,409 @@
+/* Haus²⁵ - Underground Bauhaus Brand Styling */
+
+@layer base {
+  :root {
+    /* Underground Bauhaus Core - Absolute Opposition */
+    --background: 0 0% 100%; /* Pure white void */
+    --foreground: 0 0% 0%;   /* Absolute black */
+    
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    
+    /* Bauhaus Primary - Blood Red Disruption */
+    --primary: 0 100% 50%; /* Pure #FF0000 */
+    --primary-foreground: 0 0% 100%;
+    
+    /* Underground Secondary - Concrete Texture */
+    --secondary: 0 0% 10%; /* #1A1A1A concrete */
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 70%;
+    
+    /* Electric Accent - tuned to accessible lime */
+    --accent: 100 95% 47%; /* accessible neon-lime */
+    --accent-foreground: 0 0% 10%;
+    
+    /* Contrast - Pure Opposition */
+    --contrast: 0 0% 0%; /* Absolute black */
+    --contrast-foreground: 0 0% 100%;
+    
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 0 0% 20%;
+    --input: 0 0% 10%;
+    --ring: 0 100% 50%; /* Red ring */
+    
+    --radius: 0rem; /* No curves - pure geometric */
+    
+    /* Underground Typography - Brutal Sans */
+    --font-sans: "Work Sans", "helvetica neue", helvetica, arial, sans-serif;
+    --font-heading: "Work Sans", "helvetica neue", helvetica, arial, sans-serif;
+    --font-mono: "courier new", courier, monospace;
+  }
+  
+  .dark {
+    /* Dark Mode - Inverted Underground */
+    --background: 0 0% 0%;   /* Absolute black void */
+    --foreground: 0 0% 100%; /* Pure white */
+    
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+    
+    /* Primary Red - Unchanged Pure Power */
+    --primary: 0 100% 50%; /* Pure #FF0000 */
+    --primary-foreground: 0 0% 100%;
+    
+    /* Underground Secondary - Darker Concrete */
+    --secondary: 0 0% 15%; /* Darker concrete */
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 70%;
+    
+    /* Electric Accent - Maintained Rebellion */
+    --accent: 120 100% 50%; /* #00FF00 electric */
+    --accent-foreground: 0 0% 0%;
+    
+    /* Contrast - Inverted */
+    --contrast: 0 0% 100%; /* Pure white */
+    --contrast-foreground: 0 0% 0%;
+    
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 0 100% 50%; /* Red ring */
+  }
+}
+
+/* Load Work Sans fonts */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('./fonts/WorkSans-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url('./fonts/WorkSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url('./fonts/WorkSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url('./fonts/WorkSans-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Global Brand Styling */
+* {
+  text-transform: lowercase !important; /* brand mandate: no capitals anywhere */
+}
+
+body {
+  font-family: var(--font-sans) !important;
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.025em !important;
+  text-transform: lowercase !important;
+}
+
+/* Navbar styling */
+#navbar {
+  background: hsl(var(--background)) !important;
+  border-bottom: 2px solid hsl(var(--primary)) !important;
+  box-shadow: 0 4px 12px hsla(var(--primary) / 0.15) !important;
+}
+
+/* Primary buttons and links */
+.bg-primary, .text-primary {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: 2px solid hsl(var(--primary)) !important;
+  border-radius: 0 !important; /* No curves - pure geometric */
+  box-shadow: 3px 3px 0px hsl(var(--primary)) !important;
+  transition: all 0.2s ease !important;
+}
+
+.bg-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 5px 5px 0px hsl(var(--primary)), 0 8px 16px hsla(var(--primary) / 0.25) !important;
+}
+
+/* Secondary elements */
+.bg-secondary {
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--secondary-foreground)) !important;
+}
+
+/* Accent elements with electric effect */
+.text-accent, .accent {
+  color: hsl(var(--accent)) !important;
+  text-shadow: 0 0 10px hsla(var(--accent) / 0.8), 0 0 20px hsla(var(--accent) / 0.4) !important;
+}
+
+/* Code blocks and pre elements */
+pre, code {
+  font-family: var(--font-mono) !important;
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--secondary-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0 !important;
+}
+
+/* Cards and content blocks */
+.card, .content-block {
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 1px 3px hsla(var(--foreground) / 0.06), 0 2px 8px hsla(var(--foreground) / 0.04) !important;
+}
+
+/* Sidebar and navigation */
+.sidebar {
+  background: hsl(var(--background)) !important;
+  border-right: 1px solid hsl(var(--border)) !important;
+}
+
+.sidebar a {
+  color: hsl(var(--foreground)) !important;
+  font-weight: 500 !important;
+  text-transform: lowercase !important;
+}
+
+.sidebar a:hover, .sidebar a.active {
+  color: hsl(var(--primary)) !important;
+  background: hsla(var(--primary) / 0.1) !important;
+  border-left: 3px solid hsl(var(--primary)) !important;
+}
+
+/* Tables */
+table {
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0 !important;
+}
+
+th {
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--secondary-foreground)) !important;
+  font-weight: 700 !important;
+  text-transform: lowercase !important;
+}
+
+td {
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
+
+/* Forms and inputs */
+input, textarea, select {
+  background: hsl(var(--input)) !important;
+  border: 2px solid hsl(var(--border)) !important;
+  border-radius: 0 !important;
+  color: hsl(var(--foreground)) !important;
+  font-family: var(--font-sans) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: hsl(var(--primary)) !important;
+  box-shadow: 0 0 0 2px hsla(var(--primary) / 0.2) !important;
+  outline: none !important;
+}
+
+/* Badges and tags */
+.badge, .tag {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  font-weight: 700 !important;
+  text-transform: lowercase !important;
+  border-radius: 0 !important;
+  padding: 0.25rem 0.5rem !important;
+}
+
+/* Footer - Work with Mintlify's structure */
+footer {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-top: 2px solid hsl(var(--primary)) !important;
+  margin-top: 2rem !important;
+}
+
+/* Style Mintlify's existing footer elements */
+footer * {
+  text-transform: lowercase !important;
+}
+
+footer a {
+  color: hsl(var(--muted-foreground)) !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+footer a:hover {
+  color: hsl(var(--primary)) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Style the existing Mintlify footer structure */
+footer > div {
+  padding: 2rem !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+}
+
+/* Remove any duplicated content - let Mintlify handle all content */
+footer > div::after,
+footer > div::before,
+footer::after,
+footer::before {
+  display: none !important;
+}
+
+/* Style existing footer elements responsively */
+@media (max-width: 768px) {
+  footer > div {
+    text-align: center !important;
+  }
+}
+
+/* Optimized texture background */
+.texture-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+}
+
+/* Underground button mutations */
+.btn-underground {
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  background: linear-gradient(45deg, #000000, #1a1a1a) !important;
+  color: #ffffff !important;
+  border: 2px solid #ff0000 !important;
+  transform: skew(-1deg) rotate(0.25deg) !important;
+  box-shadow: 3px 3px 0px #ff0000 !important;
+  transition: all 0.2s ease !important;
+  text-transform: lowercase !important;
+}
+
+.btn-underground:hover {
+  transform: skew(-0.5deg) rotate(-0.1deg) translateY(-2px) !important;
+  box-shadow: 5px 5px 0px #ff0000, 0 8px 16px rgba(255, 0, 0, 0.25) !important;
+  background: linear-gradient(45deg, #1a1a1a, #333333) !important;
+}
+
+/* Electric accent elements */
+.electric-accent {
+  color: hsl(var(--accent)) !important;
+  text-shadow: 0 0 10px hsla(var(--accent) / 0.8), 0 0 20px hsla(var(--accent) / 0.4) !important;
+  animation: electric-flicker 2s infinite alternate !important;
+}
+
+@keyframes electric-flicker {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px hsla(var(--accent) / 0.8), 0 0 20px hsla(var(--accent) / 0.4);
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow: 0 0 5px hsla(var(--accent) / 0.6), 0 0 10px hsla(var(--accent) / 0.3);
+  }
+}
+
+/* Box shadow utilities */
+.box-shadow-brutal {
+  box-shadow: 4px 4px 0px #ff0000 !important;
+}
+
+/* Disruption animations */
+.glitch {
+  animation: glitch 3s infinite linear !important;
+}
+
+@keyframes glitch {
+  0%, 99% { transform: none; }
+  1% { transform: skew(0.5deg); }
+  2% { transform: skew(-0.5deg); }
+  3% { transform: none; }
+  4% { transform: skew(0.2deg); }
+  5% { transform: skew(-0.2deg); }
+}
+
+/* Underground layout helpers */
+.underground-title {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+  text-transform: lowercase !important;
+}
+
+@media (min-width: 768px) {
+  .underground-title {
+    font-size: 3rem !important;
+  }
+}
+
+/* Graffiti underline */
+.graffiti-underline {
+  position: relative;
+}
+
+.graffiti-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.35rem;
+  width: 40%;
+  height: 3px;
+  background: hsl(var(--primary));
+}
+
+/* Hand-drawn container aesthetic */
+.handdrawn-box {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 1px 3px hsla(var(--foreground) / 0.06), 0 4px 12px hsla(var(--foreground) / 0.05) !important;
+}
+
+/* Mintlify-specific overrides */
+[data-theme="light"] {
+  --primary-rgb: 255, 0, 0 !important;
+  --secondary-rgb: 26, 26, 26 !important;
+  --accent-rgb: 0, 255, 0 !important;
+}
+
+[data-theme="dark"] {
+  --primary-rgb: 255, 0, 0 !important;
+  --secondary-rgb: 51, 51, 51 !important;
+  --accent-rgb: 0, 255, 0 !important;
+  --background-rgb: 0, 0, 0 !important;
+  --foreground-rgb: 255, 255, 255 !important;
+}

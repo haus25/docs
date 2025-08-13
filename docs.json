@@ -1,0 +1,118 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "haus²⁵ docs",
+  "colors": {
+    "primary": "#FF0000",
+    "light": "#FF0000",
+    "dark": "#1A1A1A"
+  },
+  "customCSS": "style.css",
+
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Overview",
+        "groups": [
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "core/what-is-haus",
+              "core/real-time-assets",
+              "core/performance-arts",
+              "core/manifesto"
+            ]
+          },
+          {
+            "group": "Infra",
+            "pages": [
+              "infra/srs",
+              "infra/storage",
+              "infra/compression",
+              "infra/retrieval"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Curation",
+        "groups": [
+          {
+            "group": "Curation Agency",
+            "pages": [
+              "curation/system",
+              "curation/supervisor",
+              "curation/diagram",
+              "curation/base-agents"
+            ]
+          },
+          {
+            "group": "Scope Agents",
+            "pages": [
+              "curation/scopes/scopes",
+              "curation/scopes/planner",
+              "curation/scopes/promoter",
+              "curation/scopes/producer"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Contracts",
+        "groups": [
+          {
+            "group": "Contracts",
+            "pages": [
+              "contracts/protocol",
+              "contracts/event-factory",
+              "contracts/per-event",
+              "contracts/event-manager",
+              "contracts/delegation-and-proxy-patterns",
+              "contracts/other-contracts",
+              "contracts/deployed-contracts"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Reach out",
+        "href": "mailto:hi@haus25.live"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Try App",
+      "href": "https://haus25.live"
+    }
+  },
+  "contextual": {
+    "options": [
+     "copy",
+     "view",
+     "chatgpt",
+     "claude",
+     "perplexity",
+     "mcp",
+     "cursor",
+     "vscode"
+   ]
+  },
+  "footer": {
+    "text": "built with 🎭 by jabyl",
+    "copyright": "2025 © haus²⁵",
+    "socials": {
+      "x": "https://x.com/haus25_live",
+      "github": "https://github.com/haus25",
+      "website": "https://haus25.live"
+    }
+  }
+}

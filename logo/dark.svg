@@ -1,0 +1,14 @@
+<svg viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bauhaus-inspired logo with geometric shapes for dark mode -->
+  <rect width="40" height="40" fill="#FFFFFF" />
+  <rect x="10" y="10" width="20" height="20" stroke="#000000" stroke-width="2" />
+  <circle cx="20" cy="20" r="5" stroke="#000000" stroke-width="2" />
+  
+  <!-- Red square section -->
+  <rect x="40" y="0" width="40" height="40" fill="#FF0000" />
+  <rect x="50" y="10" width="20" height="20" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="60" cy="20" r="5" fill="#FFFFFF" />
+  
+  <!-- Text "haus²⁵" -->
+  <text x="85" y="25" font-family="Work Sans" font-size="14" font-weight="bold" fill="#FFFFFF" text-transform="lowercase">haus²⁵</text>
+</svg>
