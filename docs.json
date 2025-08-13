@@ -73,7 +73,7 @@
               "contracts/protocol",
               "contracts/event-factory",
               "contracts/per-event",
-              "contracts/event-manager",
+              "contracts/eventmanager",
               "contracts/delegation-and-proxy-patterns",
               "contracts/other-contracts",
               "contracts/deployed-contracts"
