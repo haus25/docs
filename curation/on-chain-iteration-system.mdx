@@ -197,34 +197,6 @@ sequenceDiagram
 | **ChromaDB** | $144/month | $0.20 | $1728 |
 | **haus²⁵ On-Chain** | $0 | $0.01 | **$10** |
 
-## Error Handling and Recovery
-
-### Robust Error Patterns
-
-**IPFS Upload Failures**: Retry logic with exponential backoff (3 attempts), error logging, and graceful failure handling.
-
-**Blockchain Transaction Failures**: writeContract with 30-second timeout using Promise.race, transaction receipt validation, and comprehensive error logging.
-
-### Graceful Degradation
-
-**Fallback for Non-Numeric Event IDs**: Mock metadata generation for test events with non-numeric IDs, graceful handling with placeholder values and planning status.
-
-## Future Enhancements
-
-### Planned Optimizations
-
-**Compression for Large Iterations**: Planned gzip compression for iteration data exceeding 10KB with compressed flag and content compression.
-
-**Multi-Chain Support**:
-- Polygon for lower costs
-- Ethereum for maximum decentralization
-- Arbitrum for faster finality
-
-**Enhanced Caching**:
-- Local SQLite cache for frequent reads
-- Redis cache for shared server instances
-- Content-addressed caching for IPFS content
-
 ## Related Documentation
 
 - [Shared Agents](/curation/shared-agents) - How Memory Agent integrates with other agents
