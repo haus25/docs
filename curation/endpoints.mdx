@@ -1,0 +1,431 @@
+---
+title: "API Endpoints"
+description: "Complete reference for haus²⁵ autonomous curation service REST API endpoints."
+---
+
+The curation service provides REST API endpoints for multi-agent event optimization and promotional content generation. All endpoints use JSON request/response format and support CORS for browser integration.
+
+## Base Configuration
+
+**Base URL**: `http://localhost:3001` (development) / `https://curation.haus25.live` (production)  
+**Content-Type**: `application/json`  
+**Body Limit**: 50MB  
+**CORS**: Enabled for haus25.live domains
+
+## Health & Service Information
+
+### Get Service Health
+
+```http
+GET /health
+```
+
+**Response**: Service status with API availability and agent configuration.
+
+```json
+{
+  "status": "healthy",
+  "timestamp": "2025-01-07T10:30:00.000Z",
+  "service": "RTA Multi-Agent Curation System",
+  "version": "2.0.0",
+  "models": {
+    "primary": "gemini-2.5-flash-lite",
+    "secondary": "claude-3.5-sonnet"
+  },
+  "apis": {
+    "google": true,
+    "claude": true,
+    "youtube": false,
+    "twitter": true,
+    "pinata": true,
+    "blockchain": true
+  },
+  "scopes": ["planner", "promoter", "producer"],
+  "agents": {
+    "planner": ["research", "pricing", "banner", "description"],
+    "promoter": ["campaign", "social", "partnership"],
+    "producer": ["recording", "enhancement", "content"]
+  }
+}
+```
+
+### Get Curation Scopes
+
+```http
+GET /scopes
+```
+
+**Response**: Available curation service levels with pricing and agent details.
+
+```json
+{
+  "scopes": [
+    {
+      "id": "planner",
+      "name": "Planner",
+      "fee": "3%",
+      "status": "active",
+      "services": [
+        "Propose title & description",
+        "Propose schedule",
+        "Propose new Reserve Price",
+        "Create Banner"
+      ],
+      "agents": ["title_agent", "description_agent", "pricing_agent", "schedule_agent", "banner_agent"]
+    },
+    {
+      "id": "promoter",
+      "name": "Promoter",
+      "fee": "7%",
+      "status": "active",
+      "services": [
+        "Content strategy planning",
+        "X/Twitter content creation",
+        "Facebook event & posts",
+        "Instagram visual content",
+        "EventBrite listing optimization"
+      ],
+      "agents": ["content_manager", "x_agent", "facebook_agent", "instagram_agent", "eventbrite_agent"]
+    },
+    {
+      "id": "producer",
+      "name": "Producer",
+      "fee": "4%",
+      "status": "planned",
+      "services": [
+        "No compression storage",
+        "AI Video Enhancement",
+        "Event Highlights + Booklet"
+      ],
+      "agents": ["effects_agent", "enhancement_agent", "post_agent"]
+    }
+  ]
+}
+```
+
+## Planner Scope (Event Optimization)
+
+### Generate Event Plan
+
+```http
+POST /plan
+```
+
+**Request Body**:
+```json
+{
+  "eventId": "string",
+  "userAddress": "0x...",
+  "eventData": {
+    "title": "string",
+    "category": "standup-comedy | poetry-slam | performance-art | improv | live-streaming | podcasting",
+    "description": "string",
+    "duration": 60
+  }
+}
+```
+
+**Response**: Initial AI-generated optimization plan stored on-chain.
+
+```json
+{
+  "success": true,
+  "plan": {
+    "title": "Enhanced event title",
+    "description": "Optimized description",
+    "pricing": {
+      "ticketPrice": 15,
+      "reservePrice": 100
+    },
+    "schedule": {
+      "recommendedDate": "2025-02-15",
+      "recommendedTime": "19:00"
+    },
+    "banner": {
+      "imageUrl": "ipfs://...",
+      "colors": ["#FF6B35", "#FFFFFF"]
+    }
+  },
+  "message": "Initial plan generated and stored on-chain",
+  "status": "plan_ready",
+  "eventId": "string"
+}
+```
+
+### Iterate Plan Aspect
+
+```http
+POST /iterate
+```
+
+**Request Body**:
+```json
+{
+  "eventId": "string",
+  "aspect": "title | description | pricing | schedule | banner",
+  "feedback": "string",
+  "userAddress": "0x..."
+}
+```
+
+**Response**: Refined aspect based on user feedback.
+
+```json
+{
+  "success": true,
+  "aspect": "title",
+  "result": {
+    "title": "Refined title based on feedback",
+    "reasoning": "Applied user suggestions for engagement"
+  },
+  "iterationNumber": 2,
+  "message": "Aspect refined and stored on-chain"
+}
+```
+
+### Accept Final Plan
+
+```http
+POST /accept
+```
+
+**Request Body**:
+```json
+{
+  "eventId": "string",
+  "selectedIterations": {
+    "title": 1,
+    "description": 2,
+    "pricing": 1,
+    "schedule": 1,
+    "banner": 1
+  },
+  "userAddress": "0x..."
+}
+```
+
+**Response**: Plan acceptance with blockchain transaction details.
+
+```json
+{
+  "success": true,
+  "message": "Plan accepted and finalized on-chain",
+  "eventId": "string",
+  "metadataURI": "ipfs://...",
+  "transactionHash": "0x...",
+  "proxyAddress": "0x...",
+  "selectedIterations": {
+    "title": 1,
+    "description": 2,
+    "pricing": 1,
+    "schedule": 1,
+    "banner": 1
+  }
+}
+```
+
+## Promoter Scope (Content Strategy)
+
+### Generate Content Plan
+
+```http
+POST /content/plan
+```
+
+**Request Body**:
+```json
+{
+  "eventId": "string",
+  "userAddress": "0x...",
+  "eventData": {
+    "title": "string",
+    "category": "string",
+    "description": "string"
+  },
+  "plannerData": {
+    "title": "string",
+    "description": "string"
+  }
+}
+```
+
+**Response**: Comprehensive promotional content strategy.
+
+```json
+{
+  "success": true,
+  "contentPlan": {
+    "contentStrategy": {
+      "timeline": "2-week campaign",
+      "themes": ["behind-the-scenes", "artist-spotlight"],
+      "frequency": "daily posts"
+    },
+    "platforms": {
+      "x": {
+        "posts": ["Thread announcement", "Behind-the-scenes"],
+        "hashtags": ["#StandupComedy", "#LivePerformance"]
+      },
+      "eventbrite": {
+        "title": "SEO-optimized title",
+        "description": "Conversion-focused description"
+      },
+      "facebook": {
+        "eventPage": "Community-focused content",
+        "posts": ["Engagement posts", "Event reminders"]
+      },
+      "instagram": {
+        "posts": ["High-quality images", "Story content"],
+        "reels": ["Trending audio integration"]
+      }
+    }
+  },
+  "message": "Promotional content plan generated and stored on-chain",
+  "status": "content_plan_ready",
+  "eventId": "string"
+}
+```
+
+### Iterate Content Aspect
+
+```http
+POST /content/iterate
+```
+
+**Request Body**:
+```json
+{
+  "eventId": "string",
+  "aspect": "strategy | x | eventbrite | facebook | instagram",
+  "feedback": "string",
+  "userAddress": "0x..."
+}
+```
+
+**Response**: Refined promotional content based on feedback.
+
+```json
+{
+  "success": true,
+  "aspect": "x",
+  "result": {
+    "posts": ["Updated Twitter content"],
+    "reasoning": "Incorporated engagement feedback"
+  },
+  "iterationNumber": 2,
+  "message": "Content aspect refined and stored on-chain"
+}
+```
+
+### Accept Content Plan
+
+```http
+POST /content/accept
+```
+
+**Request Body**:
+```json
+{
+  "eventId": "string",
+  "selectedIterations": {
+    "strategy": 1,
+    "x": 2,
+    "eventbrite": 1,
+    "facebook": 1,
+    "instagram": 1
+  },
+  "userAddress": "0x..."
+}
+```
+
+**Response**: Content plan acceptance with finalization details.
+
+```json
+{
+  "success": true,
+  "message": "Promotional content accepted and finalized on-chain",
+  "eventId": "string",
+  "metadataURI": "ipfs://...",
+  "transactionHash": "0x...",
+  "proxyAddress": "0x...",
+  "selectedIterations": {
+    "strategy": 1,
+    "x": 2,
+    "eventbrite": 1,
+    "facebook": 1,
+    "instagram": 1
+  }
+}
+```
+
+## Legacy Endpoints (Deprecated)
+
+### Initialize Conversation
+
+```http
+POST /initialize
+```
+
+**Status**: Deprecated in favor of `/plan` endpoint  
+**Purpose**: Created interactive curation sessions  
+
+### Send Message
+
+```http
+POST /message
+```
+
+**Status**: Deprecated in favor of `/iterate` endpoint  
+**Purpose**: Interactive conversation with agents
+
+### Get Conversation
+
+```http
+GET /conversation/:id
+GET /conversation/:eventId/:userAddress
+```
+
+**Status**: Legacy support for existing conversations  
+**Purpose**: Retrieve conversation history and status
+
+### Get Plan
+
+```http
+GET /plan/:conversationId
+```
+
+**Status**: Legacy support for conversation-based plans  
+**Purpose**: Retrieve current plan state for conversation
+
+### Batch Curation
+
+```http
+POST /curate
+```
+
+**Status**: Legacy single-request processing  
+**Purpose**: Process event with multi-agent system in single call
+
+## Error Responses
+
+All endpoints return consistent error format:
+
+```json
+{
+  "error": "Error description",
+  "details": "Specific error message",
+  "received": {
+    "field1": "value1",
+    "field2": "value2"
+  }
+}
+```
+
+**Common HTTP Status Codes**:
+- `200`: Success
+- `400`: Bad Request (missing fields, validation errors)
+- `404`: Not Found (conversation, event not found)
+- `500`: Internal Server Error
+
+## Rate Limiting
+
+No explicit rate limiting implemented. Service handles concurrent requests through Express.js middleware and agent coordination patterns.

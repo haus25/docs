@@ -67,6 +67,12 @@
               "curation/scopes/promoter",
               "curation/scopes/producer"
             ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "curation/endpoints"
+            ]
           }
         ]
       },
