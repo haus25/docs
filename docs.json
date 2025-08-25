@@ -25,9 +25,13 @@
             "group": "Core Concepts",
             "pages": [
               "core/what-is-haus",
-              "core/real-time-assets",
-              "core/performance-arts",
-              "core/manifesto"
+              "core/rta-protocol-and-real-time-assets",
+              "core/performance-types",
+              "core/factory",
+              "core/kiosk",
+              "core/autonomous-curation-agency",
+              "core/room",
+              "core/brand-manifesto"
             ]
           },
           {
@@ -36,7 +40,8 @@
               "infra/srs",
               "infra/storage",
               "infra/compression",
-              "infra/retrieval"
+              "infra/retrieval",
+              "infra/xmtp"
             ]
           }
         ]
@@ -47,16 +52,17 @@
           {
             "group": "Curation Agency",
             "pages": [
-              "curation/system",
-              "curation/supervisor",
-              "curation/diagram",
-              "curation/base-agents"
+              "curation/system-overview",
+              "curation/stategraph-pattern",
+              "curation/system-flow-and-diagrams",
+              "curation/shared-agents",
+              "curation/on-chain-iteration-system"
             ]
           },
           {
             "group": "Scope Agents",
             "pages": [
-              "curation/scopes/scopes",
+              "curation/scopes/curation-scopes",
               "curation/scopes/planner",
               "curation/scopes/promoter",
               "curation/scopes/producer"

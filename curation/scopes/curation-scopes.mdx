@@ -1,0 +1,142 @@
+---
+title: "Curation Scopes"
+description: "Three-tier autonomous curation service levels with specialized agent capabilities and transparent fee structures."
+---
+
+The haus²⁵ autonomous curation system offers three distinct service scopes, each providing increasing levels of AI-powered event optimization and promotional support. Each scope inherits capabilities from lower tiers while adding specialized agents and services.
+
+## Scope Overview
+
+```mermaid
+graph TB
+    subgraph "Scope 1: Planner (3% fee)"
+        P1[Event Optimization]
+        P2[Title & Description Enhancement]
+        P3[Pricing Optimization]
+        P4[Schedule Optimization]
+        P5[AI Banner Generation]
+    end
+    
+    subgraph "Scope 2: Promoter (7% fee)"
+        PR1[All Planner Services]
+        PR2[Promotional Campaign Strategy]
+        PR3[Multi-Platform Content Creation]
+        PR4[Social Media Scheduling]
+        PR5[Community Building]
+    end
+    
+    subgraph "Scope 3: Producer (10% fee)"
+        PD1[All Promoter Services]
+        PD2[No-Compression Video Storage]
+        PD3[AI Video Enhancement]
+        PD4[Professional Highlight Reels]
+        PD5[Comprehensive Documentation]
+    end
+    
+    P1 --> PR1
+    PR1 --> PD1
+    
+    style P1 fill:#ff6b6b
+    style PR1 fill:#4ecdc4
+    style PD1 fill:#95e1d3
+```
+
+## Service Progression
+
+### Inheritance Model
+
+Each scope builds upon the previous, providing cumulative value:
+
+**Planner → Promoter**: Adds promotional expertise to optimized event foundations
+**Promoter → Producer**: Adds post-production excellence to comprehensive promotion
+
+### Fee Structure Rationale
+
+- **3% fee (Planner)**: Core event optimization with minimal overhead
+- **7% fee (Promoter)**: Includes promotional campaign development and execution
+- **10% fee (Producer)**: Complete end-to-end service with premium post-production
+
+## Technical Architecture
+
+### Agent Distribution
+
+**Shared Agents** (available to all scopes):
+- RAG Agent: User history and contextual preferences
+- Research Agent: Market intelligence and trend analysis  
+- Memory Agent: On-chain iteration storage and retrieval
+- Blockchain Agent: SEI integration and proxy management
+- Trends Agent: Social media trend analysis
+- Social Knowledge Agent: Platform specifications
+
+**Scope-Specific Agents**:
+- **Planner**: Title, Description, Pricing, Schedule, Banner agents
+- **Promoter**: Content Manager, X, EventBrite, Facebook, Instagram agents
+- **Producer**: Enhancement, Highlight, Documentation agents (planned)
+
+### Proxy Management
+
+Each scope operates through dedicated proxy addresses with global whitelist permissions:
+
+- **Planner Proxy**: `0xF2aC15F3db8Fd24c83494fc7B2131A74DFCAA07b`
+- **Promoter Proxy**: `0x27B8c4E2E6AaF49527b62278D834497BA344b90D`
+- **Producer Proxy**: `0xEb215ba313c12D58417674c810bAcd6C6badAD61`
+
+## Cost Analysis
+
+### Per-Event Cost Breakdown
+
+**Planner Scope**:
+- Token usage: ~3,700 tokens
+- Estimated cost: $0.065
+- Services: Event optimization, AI generation
+
+**Promoter Scope**:
+- Token usage: ~6,200 tokens  
+- Estimated cost: $0.110
+- Services: All Planner + promotional content
+
+**Producer Scope**:
+- Token usage: ~8,500 tokens (estimated)
+- Estimated cost: $0.150 (estimated)
+- Services: All Promoter + post-production
+
+### Value Proposition
+
+Traditional platforms (YouTube, Twitch) typically take 70-80% of creator revenue. haus²⁵ creators retain 90-97% while receiving professional AI curation services.
+
+## Implementation Status
+
+### Currently Available
+
+- **Planner Scope**: Full implementation with all specialized agents
+- **Promoter Scope**: Full implementation with promotional agents
+
+### In Development
+
+- **Producer Scope**: Architecture designed, implementation pending
+
+## Selection Guidance
+
+### Choose Planner if:
+- First-time haus²⁵ creator exploring platform
+- Focused on event content optimization
+- Minimal promotional needs
+- Budget-conscious approach
+
+### Choose Promoter if:
+- Established creator seeking audience growth
+- Multi-platform promotional strategy needed
+- Community building focus
+- Professional promotional content required
+
+### Choose Producer if:
+- Premium post-production quality desired
+- Professional documentation needed
+- Complete end-to-end service preferred
+- Maximum creator support wanted
+
+## Related Documentation
+
+- [Planner Scope](/curation/scopes/planner) - Detailed Planner agent capabilities
+- [Promoter Scope](/curation/scopes/promoter) - Promotional strategy and execution
+- [Producer Scope](/curation/scopes/producer) - Post-production and enhancement services

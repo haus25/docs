@@ -1,0 +1,399 @@
+---
+title: "Video Compression"
+description: "FFmpeg-based video optimization pipeline for efficient storage and streaming of live performance content."
+---
+
+The video compression pipeline optimizes live streams for permanent storage while maintaining quality suitable for replay and NFT preservation. Using FFmpeg, it processes HLS segments into web-compatible MP4 chunks with efficient encoding settings.
+
+## Compression Strategy
+
+### Quality vs. Size Optimization
+
+The system balances three key factors:
+
+- **Visual Quality**: Preserve performance details for NFT value
+- **File Size**: Minimize Filecoin storage costs
+- **Compatibility**: Ensure broad browser and device support
+
+**Target Specifications**:
+- **Container**: MP4 with `faststart` flag for web streaming
+- **Video Codec**: H.264 (libx264) for universal compatibility
+- **Audio Codec**: AAC at 128kbps for clear speech/music
+- **Resolution**: Maintain source resolution (typically 1080p)
+- **Frame Rate**: Preserve original frame rate (usually 30fps)
+
+**Encoding Presets**: Three quality levels - High (CRF 23, medium preset, 2000k bitrate), Medium (CRF 26, fast preset, 1000k bitrate), Low (CRF 30, faster preset, 500k bitrate).
+
+## FFmpeg Pipeline
+
+### Segment Concatenation
+
+**Input Processing**: createVideoChunk function combines 10-second HLS segments into 60-second chunks using FFmpeg concat demuxer with libx264 video, AAC audio, CRF 26, and faststart flag.
+
+### Quality Control
+
+**Constant Rate Factor (CRF)**:
+CRF provides consistent visual quality across different content types:
+
+- **CRF 18-23**: Near-lossless, suitable for archival
+- **CRF 23-28**: High quality, good for distribution
+- **CRF 28-32**: Medium quality, smaller files
+- **CRF 32+**: Low quality, minimal bandwidth
+
+**Adaptive Quality Selection**:
+```typescript
+function selectQualityPreset(contentAnalysis: ContentMetrics): CompressionPreset {
+  const { motion, complexity, duration } = contentAnalysis
+  
+  // High motion content (performance art, dance)
+  if (motion > 0.7) {
+    return complexity > 0.6 ? 'high' : 'medium'
+  }
+  
+  // Low motion content (poetry, podcasting)
+  if (motion < 0.3) {
+    return duration > 3600 ? 'low' : 'medium' // Longer content = smaller files
+  }
+  
+  return 'medium' // Default for most content
+}
+```
+
+### Audio Optimization
+
+**Speech-Optimized Encoding**:
+Most performances involve speech or music, requiring careful audio handling:
+
+```bash
+# FFmpeg audio settings
+-c:a aac              # AAC codec for compatibility
+-b:a 128k             # 128kbps bitrate for clear speech
+-ar 44100             # Standard sample rate
+-ac 2                 # Stereo channels
+-vol 256              # Normalize volume if needed
+```
+
+**Content-Aware Audio**:
+```typescript
+const audioSettings = {
+  speech: {
+    bitrate: '96k',   // Lower bitrate for speech
+    profile: 'aac_he' // High-efficiency AAC
+  },
+  music: {
+    bitrate: '192k',  // Higher quality for music
+    profile: 'aac_lc' // Low complexity AAC
+  },
+  mixed: {
+    bitrate: '128k',  // Balanced setting
+    profile: 'aac_lc'
+  }
+}
+```
+
+## Performance Optimization
+
+### Hardware Acceleration
+
+**GPU Encoding** (when available):
+```typescript
+const hwAccelOptions = {
+  nvidia: ['-c:v', 'h264_nvenc', '-preset', 'fast'],
+  intel: ['-c:v', 'h264_vaapi', '-vaapi_device', '/dev/dri/renderD128'],
+  amd: ['-c:v', 'h264_amf'],
+  apple: ['-c:v', 'h264_videotoolbox']
+}
+
+function getHardwareEncoder(): string[] {
+  const platform = process.platform
+  const hasNvidia = checkNvidiaGPU()
+  const hasIntelGPU = checkIntelGPU()
+  
+  if (hasNvidia) return hwAccelOptions.nvidia
+  if (platform === 'darwin') return hwAccelOptions.apple
+  if (hasIntelGPU) return hwAccelOptions.intel
+  
+  return [] // Fallback to software encoding
+}
+```
+
+### CPU Optimization
+
+**Multi-threading**:
+```typescript
+function calculateOptimalThreads(): number {
+  const cpuCores = os.cpus().length
+  const memoryGB = os.totalmem() / (1024 * 1024 * 1024)
+  
+  // Reserve cores for other processes
+  const maxThreads = Math.max(1, cpuCores - 2)
+  
+  // Memory constraint: ~1GB per thread for 1080p
+  const memoryLimitedThreads = Math.floor(memoryGB / 1.5)
+  
+  return Math.min(maxThreads, memoryLimitedThreads, 8)
+}
+
+// Apply to FFmpeg command
+const threads = calculateOptimalThreads()
+ffmpegArgs.push('-threads', threads.toString())
+```
+
+### Memory Management
+
+**Streaming Processing**:
+```typescript
+// Process video in streaming mode to handle large files
+const streamingOptions = [
+  '-f', 'mp4',
+  '-movflags', 'frag_keyframe+empty_moov+faststart',
+  '-reset_timestamps', '1',
+  '-avoid_negative_ts', 'make_zero'
+]
+```
+
+## Quality Analysis
+
+### Content-Aware Compression
+
+**Motion Detection**:
+```typescript
+async function analyzeMotion(segmentPath: string): Promise<number> {
+  const analysis = await execFFmpeg([
+    '-i', segmentPath,
+    '-vf', 'select=gt(scene\\,0.3)',
+    '-f', 'null',
+    '-'
+  ])
+  
+  // Parse motion vectors from output
+  const motionScore = parseMotionAnalysis(analysis.stderr)
+  return Math.min(1.0, motionScore / 100)
+}
+```
+
+**Complexity Analysis**:
+```typescript
+async function analyzeComplexity(segmentPath: string): Promise<number> {
+  const analysis = await execFFmpeg([
+    '-i', segmentPath,
+    '-vf', 'thumbnail,scale=64:64',
+    '-frames:v', '1',
+    '-f', 'image2pipe',
+    '-'
+  ])
+  
+  // Analyze color variance and edge density
+  return calculateVisualComplexity(analysis.stdout)
+}
+```
+
+### Adaptive Bitrate Selection
+
+**Target Bitrate Calculation**:
+```typescript
+function calculateTargetBitrate(
+  resolution: { width: number; height: number },
+  frameRate: number,
+  contentType: 'speech' | 'music' | 'performance'
+): number {
+  const pixelsPerSecond = resolution.width * resolution.height * frameRate
+  
+  const baseBitrate = {
+    speech: 0.1,      // 0.1 bits per pixel for speech
+    music: 0.15,      // 0.15 for music/audio focus
+    performance: 0.2  // 0.2 for visual performance
+  }
+  
+  return Math.round(pixelsPerSecond * baseBitrate[contentType] / 1000) // kbps
+}
+```
+
+## Size Optimization
+
+### File Size Targets
+
+**Storage Cost Considerations**:
+```typescript
+const storageCostTargets = {
+  // Target file sizes for different durations (60s chunks)
+  maxSizes: {
+    '1080p': 25 * 1024 * 1024,  // 25MB for 60s
+    '720p': 15 * 1024 * 1024,   // 15MB for 60s
+    '480p': 8 * 1024 * 1024     // 8MB for 60s
+  },
+  
+  // Filecoin cost per GB/year
+  storageCostPerGB: 0.10,
+  
+  // Target: <$1 storage cost per hour of content
+  targetCostPerHour: 1.00
+}
+```
+
+**Dynamic Quality Adjustment**:
+```typescript
+async function adjustQualityForTarget(
+  inputPath: string,
+  targetSizeMB: number
+): Promise<CompressionSettings> {
+  const inputSize = await getFileSize(inputPath)
+  const duration = await getVideoDuration(inputPath)
+  
+  if (inputSize <= targetSizeMB * 1024 * 1024) {
+    return defaultSettings
+  }
+  
+  // Calculate required compression ratio
+  const compressionRatio = inputSize / (targetSizeMB * 1024 * 1024)
+  
+  // Adjust CRF based on required compression
+  const adjustedCRF = Math.min(32, 23 + Math.log2(compressionRatio) * 2)
+  
+  return {
+    crf: Math.round(adjustedCRF),
+    preset: compressionRatio > 4 ? 'faster' : 'fast',
+    twoPass: compressionRatio > 6 // Use two-pass for high compression
+  }
+}
+```
+
+## Format Optimization
+
+### Web Compatibility
+
+**Browser Support Matrix**:
+```typescript
+const formatSupport = {
+  h264_baseline: {
+    safari: true,
+    chrome: true,
+    firefox: true,
+    edge: true,
+    mobile: true
+  },
+  h264_main: {
+    safari: true,
+    chrome: true,
+    firefox: true,
+    edge: true,
+    mobile: 'partial' // Some older devices
+  },
+  h264_high: {
+    safari: true,
+    chrome: true,
+    firefox: true,
+    edge: true,
+    mobile: false // Limited mobile support
+  }
+}
+
+// Select profile based on target compatibility
+function selectH264Profile(targetDevices: string[]): string {
+  if (targetDevices.includes('mobile')) {
+    return 'baseline'
+  }
+  return targetDevices.includes('legacy') ? 'main' : 'high'
+}
+```
+
+### Progressive Download
+
+**Faststart Optimization**:
+```bash
+# Move moov atom to beginning for progressive download
+-movflags faststart
+
+# Additional streaming optimizations
+-movflags +faststart+dash+frag_keyframe
+```
+
+## Error Recovery
+
+### Robust Processing
+
+**Input Validation**:
+```typescript
+async function validateInput(segmentPath: string): Promise<boolean> {
+  try {
+    const info = await execFFmpeg([
+      '-i', segmentPath,
+      '-t', '0.1',
+      '-f', 'null',
+      '-'
+    ])
+    
+    return !info.stderr.includes('Invalid data')
+  } catch {
+    return false
+  }
+}
+```
+
+**Corruption Handling**:
+```typescript
+async function repairCorrupted(segmentPath: string): Promise<string> {
+  const repairedPath = `${segmentPath}.repaired`
+  
+  await execFFmpeg([
+    '-err_detect', 'ignore_err',
+    '-i', segmentPath,
+    '-c', 'copy',
+    '-avoid_negative_ts', 'make_zero',
+    repairedPath
+  ])
+  
+  return repairedPath
+}
+```
+
+## Monitoring & Metrics
+
+### Compression Analytics
+
+**Quality Metrics**:
+```typescript
+interface CompressionMetrics {
+  originalSize: number
+  compressedSize: number
+  compressionRatio: number
+  processingTime: number
+  visualQuality: number // PSNR/SSIM score
+  audioQuality: number
+  targetAchieved: boolean
+}
+
+async function measureQuality(
+  originalPath: string,
+  compressedPath: string
+): Promise<QualityMetrics> {
+  // Use FFmpeg to calculate PSNR
+  const psnrResult = await execFFmpeg([
+    '-i', originalPath,
+    '-i', compressedPath,
+    '-lavfi', 'psnr',
+    '-f', 'null',
+    '-'
+  ])
+  
+  return parsePSNROutput(psnrResult.stderr)
+}
+```
+
+### Performance Tracking
+
+**Optimization Insights**:
+```typescript
+const compressionStats = {
+  averageCompressionRatio: 0.35, // 65% size reduction
+  averageProcessingTime: 45,     // 45 seconds per minute of video
+  qualityRetention: 0.92,        // 92% visual quality retained
+  storageEfficiency: 0.88        // 88% of target size
+}
+```
+
+## Related Documentation
+
+- [Storage](/infra/storage) - How compressed chunks integrate with Filecoin storage
+- [SRS](/infra/srs) - Source video streams for compression pipeline
+- [Retrieval](/infra/retrieval) - How compressed content is delivered to users

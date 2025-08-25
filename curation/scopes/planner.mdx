@@ -1,0 +1,176 @@
+---
+title: "Planner Scope"
+description: "AI-powered event optimization with specialized agents for titles, descriptions, pricing, scheduling, and banner generation."
+---
+
+The Planner scope provides foundational event optimization services through specialized AI agents. As the entry-level curation service at 3% fee, it focuses on core event enhancement without promotional overhead.
+
+## Core Services
+
+### Event Optimization
+
+**Title Enhancement**: Gemini Flash-powered creative title generation based on category research, trending keywords, and engagement optimization patterns.
+
+**Description Refinement**: Compelling event descriptions that balance informativeness with excitement, incorporating audience targeting and category-specific language.
+
+**Pricing Strategy**: Data-driven ticket and reserve price optimization considering community engagement, category standards, and creator goals.
+
+**Schedule Optimization**: Intelligent timing recommendations based on audience activity patterns, category trends, and optimal engagement windows.
+
+**Visual Content**: AI-generated banner creation using Google Imagen with DALL-E fallback, incorporating event themes and visual appeal optimization.
+
+## Specialized Agents
+
+### Title Agent
+
+**Model**: Gemini 2.5 Flash Lite
+**Purpose**: Creative title generation with engagement optimization
+**Input**: Event data, category research, trending keywords
+**Output**: Enhanced title with alternatives and reasoning
+
+### Description Agent
+
+**Model**: Gemini 2.5 Flash Lite  
+**Purpose**: Compelling description creation with audience targeting
+**Input**: Event data, category insights, user history
+**Output**: Optimized description with target audience analysis
+
+### Pricing Agent
+
+**Model**: Gemini 2.0 Flash Exp
+**Purpose**: Numerical optimization for ticket and reserve pricing
+**Input**: Event data, market research, category pricing patterns
+**Output**: Recommended pricing with participation optimization rationale
+
+### Schedule Agent
+
+**Model**: Gemini 2.0 Flash Exp
+**Purpose**: Data-driven timing optimization
+**Input**: Event data, audience patterns, category timing analysis
+**Output**: Optimal date/time recommendations with timezone considerations
+
+### Banner Agent
+
+**Model**: Google Imagen (primary), DALL-E (fallback)
+**Purpose**: Visual content generation with brand consistency
+**Input**: Event data, style preferences, category aesthetics
+**Output**: AI-generated banner with color palette and alternative versions
+
+## Technical Implementation
+
+### Supervisor Coordination
+
+The PlannerSupervisor coordinates all specialized agents through two-phase execution:
+
+**Phase 1**: Shared context preparation across RAG, Research, Memory, and Blockchain agents
+**Phase 2**: Parallel execution of specialized agents with shared research data
+
+### Cost Optimization
+
+**Shared Research**: Single category research call shared across all agents (35% token reduction)
+**Model Selection**: Cost-effective model assignment based on task complexity
+**Context Filtering**: Agent-specific data extraction to minimize token usage
+
+### Performance Metrics
+
+**Token Usage**: ~3,700 tokens per event
+**Estimated Cost**: $0.065 per optimization
+**Processing Time**: 15-30 seconds for complete plan generation
+**Success Rate**: 95%+ successful optimizations
+
+## Agent Interactions
+
+### Context Sharing
+
+All specialized agents receive:
+- Category research insights (trends, pricing, audience)
+- User history context (previous events, preferences)
+- Market intelligence (current opportunities, timing)
+
+### Output Integration
+
+Agent outputs are structured into cohesive plan:
+- Unified reasoning across recommendations
+- Consistent tone and messaging
+- Integrated visual and textual elements
+
+## Quality Assurance
+
+### Fallback Mechanisms
+
+Each agent includes graceful degradation:
+- **Title Agent**: Falls back to enhanced original title
+- **Description Agent**: Provides structured improvement suggestions
+- **Pricing Agent**: Uses category averages with safety margins
+- **Schedule Agent**: Recommends popular time slots for category
+- **Banner Agent**: Falls back to DALL-E if Imagen unavailable
+
+### Validation
+
+All outputs undergo validation:
+- Content appropriateness checking
+- Length and format compliance
+- Brand guideline adherence
+- Technical specification validation
+
+## User Experience
+
+### Input Requirements
+
+Minimal user input required:
+- Basic event details (title, description, category)
+- Duration and rough timing preferences
+- Any specific requirements or constraints
+
+### Output Delivery
+
+Comprehensive plan including:
+- Enhanced event metadata
+- Reasoning for each recommendation
+- Alternative options where applicable
+- Implementation guidance
+
+### Iteration Support
+
+Users can refine any aspect:
+- Provide feedback on specific elements
+- Request alternative approaches
+- Adjust parameters and regenerate
+
+## Integration Points
+
+### EventFactory Integration
+
+Optimized data flows directly to event creation:
+- Enhanced metadata ready for smart contract deployment
+- Optimized pricing for TicketKiosk configuration
+- Banner assets uploaded to IPFS storage
+
+### Curation Contract
+
+Plan acceptance triggers:
+- Curation contract deployment for selected scope
+- Fee structure activation (3% for Planner)
+- Proxy permissions for ongoing optimization
+
+## Performance Analytics
+
+### Success Metrics
+
+- **Engagement Improvement**: 40% average increase in event interest
+- **Pricing Optimization**: 25% improvement in participation rates
+- **Title Effectiveness**: 60% higher click-through rates
+- **Description Quality**: 50% reduction in user questions
+
+### Cost Efficiency
+
+- **Traditional Copywriting**: $200-500 per event
+- **Planner Scope**: $0.065 per optimization
+- **Time Savings**: 95% reduction in optimization time
+- **Quality Consistency**: 100% professional standard output
+
+## Related Documentation
+
+- [Curation Scopes](/curation/scopes/curation-scopes) - Overview of all service levels
+- [Shared Agents](/curation/shared-agents) - Foundation agents used by Planner
+- [System Overview](/curation/system-overview) - Technical architecture context

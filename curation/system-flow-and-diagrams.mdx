@@ -1,0 +1,246 @@
+---
+title: "System Flow and Diagrams"
+description: "Comprehensive flows and hierarchical relations in the haus²⁵ multi-agent curation system architecture."
+---
+
+The haus²⁵ curation system implements complex multi-agent workflows with hierarchical coordination patterns. These diagrams illustrate the interconnections between services, agents, and data flows across the entire autonomous representation agency.
+
+## Overall System Architecture
+
+```mermaid
+graph TB
+    subgraph "Frontend Interface"
+        UI[haus²⁵ UI]
+        FACTORY[Factory Page]
+        KIOSK[Kiosk Page]
+        ROOM[Room Page]
+    end
+    
+    subgraph "Curation Service Layer"
+        API[Express API]
+        PLANNER[Planner Supervisor]
+        PROMOTER[Promoter Supervisor]
+        PRODUCER[Producer Supervisor]
+    end
+    
+    subgraph "Shared Agent Infrastructure"
+        RAG[RAG Agent]
+        RESEARCH[Research Agent]
+        MEMORY[Memory Agent]
+        BLOCKCHAIN[Blockchain Agent]
+        TRENDS[Trends Agent]
+        SOCIAL[Social Knowledge Agent]
+    end
+    
+    subgraph "External Services"
+        PINATA[Pinata IPFS]
+        SEI[SEI Blockchain]
+        GOOGLE[Google APIs]
+        YOUTUBE[YouTube API]
+        APIFY[Apify Platform]
+        IMAGEN[Google Imagen]
+        DALLE[DALL-E API]
+    end
+    
+    subgraph "Smart Contracts"
+        EF[EventFactory]
+        EM[EventManager]
+        TK[TicketKiosk]
+        LT[LiveTipping]
+        CURATION[Curation Contract]
+    end
+    
+    UI --> FACTORY & KIOSK & ROOM
+    FACTORY --> API
+    API --> PLANNER & PROMOTER & PRODUCER
+    
+    PLANNER --> RAG & RESEARCH & MEMORY & BLOCKCHAIN
+    PROMOTER --> RAG & RESEARCH & MEMORY & BLOCKCHAIN & TRENDS & SOCIAL
+    PRODUCER --> RAG & RESEARCH & MEMORY & BLOCKCHAIN & TRENDS & SOCIAL
+    
+    RAG --> PINATA
+    RESEARCH --> GOOGLE & YOUTUBE
+    MEMORY --> PINATA & SEI
+    BLOCKCHAIN --> SEI
+    TRENDS --> APIFY
+    
+    BLOCKCHAIN --> EF & EM & TK & LT & CURATION
+    
+    style PLANNER fill:#ff6b6b
+    style PROMOTER fill:#4ecdc4
+    style PRODUCER fill:#95e1d3
+    style MEMORY fill:#ffe66d
+```
+
+## Curation Request Flow
+
+```mermaid
+sequenceDiagram
+    participant Creator as Creator
+    participant Frontend as haus²⁵ UI
+    participant API as Curation API
+    participant Supervisor as Planner/Promoter
+    participant Shared as Shared Agents
+    participant Specialized as Specialized Agents
+    participant Memory as Memory Agent
+    participant Chain as SEI Blockchain
+    
+    Creator->>Frontend: Request Curation
+    Frontend->>API: POST /plan {eventData, userAddress, scope}
+    
+    Note over API,Chain: Context Preparation Phase
+    API->>Supervisor: generatePlan(eventData, userAddress)
+    Supervisor->>Shared: prepareSharedContext()
+    
+    par Parallel Context Gathering
+        Shared->>Shared: RAG.indexUserHistory(userAddress)
+        Shared->>Shared: Research.researchCategory(category)
+        Shared->>Shared: Trends.researchTrends(category) [Promoter+]
+    end
+    
+    Note over API,Chain: Agent Coordination Phase
+    Supervisor->>Specialized: coordinateAgents(sharedContext)
+    
+    par Parallel Agent Execution
+        Specialized->>Specialized: TitleAgent.generate()
+        Specialized->>Specialized: DescriptionAgent.generate()
+        Specialized->>Specialized: PricingAgent.generate()
+        Specialized->>Specialized: ScheduleAgent.generate()
+        Specialized->>Specialized: BannerAgent.generate()
+    end
+    
+    Note over API,Chain: Plan Assembly
+    Specialized->>Supervisor: aggregateResults()
+    Supervisor->>Memory: addIteration(eventId, 'plan_state', plan, 1)
+    Memory->>Chain: updateMetadata(eventId, metadataURI)
+    
+    Chain->>Memory: Transaction Confirmation
+    Memory->>Supervisor: Plan Stored
+    Supervisor->>API: Return Plan
+    API->>Frontend: Plan Response
+    Frontend->>Creator: Display Plan
+```
+
+## Multi-Agent Coordination Pattern
+
+```mermaid
+graph TB
+    subgraph "Supervisor Layer"
+        PS[Planner Supervisor]
+        PRS[Promoter Supervisor] 
+        PDS[Producer Supervisor]
+    end
+    
+    subgraph "Shared Context"
+        SC[Shared Context Pool]
+        RC[Research Cache]
+        UC[User Context]
+        TC[Trends Cache]
+    end
+    
+    subgraph "Planner Agents"
+        TA[Title Agent<br/>Gemini Flash]
+        DA[Description Agent<br/>Gemini Flash]
+        PA[Pricing Agent<br/>Gemini Lite]
+        SA[Schedule Agent<br/>Gemini Lite]
+        BA[Banner Agent<br/>Imagen/DALL-E]
+    end
+    
+    subgraph "Promoter Agents"
+        CM[Content Manager<br/>Claude Sonnet]
+        XA[X Agent<br/>Claude Sonnet]
+        EB[EventBrite Agent<br/>Claude Sonnet]
+        FB[Facebook Agent<br/>Claude Sonnet]
+        IG[Instagram Agent<br/>Claude/GPT-4o]
+    end
+    
+    subgraph "Producer Agents"
+        EA[Enhancement Agent<br/>Planned]
+        HA[Highlight Agent<br/>Planned]
+        DOC[Documentation Agent<br/>Planned]
+    end
+    
+    PS --> SC
+    PRS --> SC
+    PDS --> SC
+    
+    SC --> RC & UC & TC
+    
+    PS --> TA & DA & PA & SA & BA
+    PRS --> TA & DA & PA & SA & BA
+    PRS --> CM & XA & EB & FB & IG
+    PDS --> TA & DA & PA & SA & BA
+    PDS --> CM & XA & EB & FB & IG
+    PDS --> EA & HA & DOC
+    
+    style PS fill:#ff6b6b
+    style PRS fill:#4ecdc4
+    style PDS fill:#95e1d3
+    style SC fill:#ffe66d
+```
+
+## Cost Optimization Flow
+
+```mermaid
+graph TB
+    subgraph "Request Processing"
+        REQ[Curation Request]
+        CACHE[Context Cache Check]
+        PREP[Context Preparation]
+    end
+    
+    subgraph "Shared Context Strategy"
+        SINGLE[Single Research Call]
+        FILTER[Agent-Specific Filtering]
+        DIST[Context Distribution]
+    end
+    
+    subgraph "Model Selection"
+        CREATIVE[Creative Tasks<br/>Gemini Flash Lite<br/>$0.075/1M tokens]
+        ANALYTICAL[Analytical Tasks<br/>Gemini Flash Exp<br/>$0.02/1M tokens]
+        STRATEGIC[Strategic Tasks<br/>Claude Sonnet<br/>$3.00/1M tokens]
+    end
+    
+    subgraph "Token Optimization"
+        BEFORE[Before: 6000 tokens<br/>4x research calls]
+        AFTER[After: 3900 tokens<br/>1x shared research]
+        SAVINGS[35% Reduction]
+    end
+    
+    REQ --> CACHE
+    CACHE --> PREP
+    PREP --> SINGLE
+    SINGLE --> FILTER
+    FILTER --> DIST
+    
+    DIST --> CREATIVE & ANALYTICAL & STRATEGIC
+    
+    BEFORE --> AFTER
+    AFTER --> SAVINGS
+    
+    style SAVINGS fill:#90EE90
+    style SINGLE fill:#FFE66D
+    style CREATIVE fill:#FFB6C1
+    style ANALYTICAL fill:#87CEEB
+    style STRATEGIC fill:#DDA0DD
+```
+
+## Integration Points
+
+The curation system integrates with multiple haus²⁵ services through well-defined interfaces:
+
+### Frontend Integration
+- **Factory Page**: Event creation with curation options
+- **Kiosk Page**: Curated event discovery and filtering  
+- **Room Page**: Live curation status and real-time optimization
+
+### Blockchain Integration
+- **EventFactory**: Event creation with curation metadata
+- **EventManager**: Iteration storage and metadata updates
+- **Curation Contract**: Scope-specific fee management and proxy delegation
+
+### Infrastructure Integration
+- **Storage Service**: Video processing coordination for Producer scope
+- **Streaming Service**: Real-time optimization during live events
+- **XMTP Service**: Community engagement strategy coordination
+
