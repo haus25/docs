@@ -20,90 +20,13 @@ The curation service provides REST API endpoints for multi-agent event optimizat
 GET /health
 ```
 
-**Response**: Service status with API availability and agent configuration.
-
-```json
-{
-  "status": "healthy",
-  "timestamp": "2025-01-07T10:30:00.000Z",
-  "service": "RTA Multi-Agent Curation System",
-  "version": "2.0.0",
-  "models": {
-    "primary": "gemini-2.5-flash-lite",
-    "secondary": "claude-3.5-sonnet"
-  },
-  "apis": {
-    "google": true,
-    "claude": true,
-    "youtube": false,
-    "twitter": true,
-    "pinata": true,
-    "blockchain": true
-  },
-  "scopes": ["planner", "promoter", "producer"],
-  "agents": {
-    "planner": ["research", "pricing", "banner", "description"],
-    "promoter": ["campaign", "social", "partnership"],
-    "producer": ["recording", "enhancement", "content"]
-  }
-}
-```
-
 ### Get Curation Scopes
 
 ```http
 GET /scopes
 ```
 
-**Response**: Available curation service levels with pricing and agent details.
-
-```json
-{
-  "scopes": [
-    {
-      "id": "planner",
-      "name": "Planner",
-      "fee": "3%",
-      "status": "active",
-      "services": [
-        "Propose title & description",
-        "Propose schedule",
-        "Propose new Reserve Price",
-        "Create Banner"
-      ],
-      "agents": ["title_agent", "description_agent", "pricing_agent", "schedule_agent", "banner_agent"]
-    },
-    {
-      "id": "promoter",
-      "name": "Promoter",
-      "fee": "7%",
-      "status": "active",
-      "services": [
-        "Content strategy planning",
-        "X/Twitter content creation",
-        "Facebook event & posts",
-        "Instagram visual content",
-        "EventBrite listing optimization"
-      ],
-      "agents": ["content_manager", "x_agent", "facebook_agent", "instagram_agent", "eventbrite_agent"]
-    },
-    {
-      "id": "producer",
-      "name": "Producer",
-      "fee": "4%",
-      "status": "planned",
-      "services": [
-        "No compression storage",
-        "AI Video Enhancement",
-        "Event Highlights + Booklet"
-      ],
-      "agents": ["effects_agent", "enhancement_agent", "post_agent"]
-    }
-  ]
-}
-```
-
-## Planner Scope (Event Optimization)
+## Planner Scope
 
 ### Generate Event Plan
 
@@ -111,46 +34,7 @@ GET /scopes
 POST /plan
 ```
 
-**Request Body**:
-```json
-{
-  "eventId": "string",
-  "userAddress": "0x...",
-  "eventData": {
-    "title": "string",
-    "category": "standup-comedy | poetry-slam | performance-art | improv | live-streaming | podcasting",
-    "description": "string",
-    "duration": 60
-  }
-}
-```
-
 **Response**: Initial AI-generated optimization plan stored on-chain.
-
-```json
-{
-  "success": true,
-  "plan": {
-    "title": "Enhanced event title",
-    "description": "Optimized description",
-    "pricing": {
-      "ticketPrice": 15,
-      "reservePrice": 100
-    },
-    "schedule": {
-      "recommendedDate": "2025-02-15",
-      "recommendedTime": "19:00"
-    },
-    "banner": {
-      "imageUrl": "ipfs://...",
-      "colors": ["#FF6B35", "#FFFFFF"]
-    }
-  },
-  "message": "Initial plan generated and stored on-chain",
-  "status": "plan_ready",
-  "eventId": "string"
-}
-```
 
 ### Iterate Plan Aspect
 
@@ -176,7 +60,7 @@ POST /iterate
   "aspect": "title",
   "result": {
     "title": "Refined title based on feedback",
-    "reasoning": "Applied user suggestions for engagement"
+    "reasoning": "Applied user suggestions"
   },
   "iterationNumber": 2,
   "message": "Aspect refined and stored on-chain"
@@ -232,58 +116,7 @@ POST /accept
 POST /content/plan
 ```
 
-**Request Body**:
-```json
-{
-  "eventId": "string",
-  "userAddress": "0x...",
-  "eventData": {
-    "title": "string",
-    "category": "string",
-    "description": "string"
-  },
-  "plannerData": {
-    "title": "string",
-    "description": "string"
-  }
-}
-```
-
 **Response**: Comprehensive promotional content strategy.
-
-```json
-{
-  "success": true,
-  "contentPlan": {
-    "contentStrategy": {
-      "timeline": "2-week campaign",
-      "themes": ["behind-the-scenes", "artist-spotlight"],
-      "frequency": "daily posts"
-    },
-    "platforms": {
-      "x": {
-        "posts": ["Thread announcement", "Behind-the-scenes"],
-        "hashtags": ["#StandupComedy", "#LivePerformance"]
-      },
-      "eventbrite": {
-        "title": "SEO-optimized title",
-        "description": "Conversion-focused description"
-      },
-      "facebook": {
-        "eventPage": "Community-focused content",
-        "posts": ["Engagement posts", "Event reminders"]
-      },
-      "instagram": {
-        "posts": ["High-quality images", "Story content"],
-        "reels": ["Trending audio integration"]
-      }
-    }
-  },
-  "message": "Promotional content plan generated and stored on-chain",
-  "status": "content_plan_ready",
-  "eventId": "string"
-}
-```
 
 ### Iterate Content Aspect
 
