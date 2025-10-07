@@ -30,8 +30,7 @@
               "core/factory",
               "core/kiosk",
               "core/autonomous-curation-agency",
-              "core/room",
-              "core/brand-manifesto"
+              "core/room"            
             ]
           },
           {

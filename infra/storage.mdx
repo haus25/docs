@@ -1,11 +1,11 @@
 ---
 title: "Filecoin Storage Service"
-description: "Automatic video chunk processing and permanent decentralized storage using Storacha and Filecoin."
+description: "Automatic video chunk processing and permanent decentralized storage using Lighthouse and Filecoin."
 ---
 
-The Filecoin Storage Service monitors live streams and automatically uploads video content to permanent decentralized storage, ensuring performances are preserved forever without relying on centralized platforms.
+The Lighthouse Storage monitors live streams and automatically uploads video content to permanent decentralized storage, ensuring performances are preserved forever without relying on centralized platforms.
 
-Built on Storacha (formerly web3.storage), it processes video streams into 60-second chunks and provides verifiable Proof of Data Possession (PDP) receipts.
+Built on Lighthouse, it processes video streams into 60-second chunks and provides verifiable Proof of Data Possession (PDP) receipts.
 
 ## Architecture Overview
 
@@ -17,11 +17,10 @@ graph TB
     B --> C[Storage Service Monitor]
     C --> D[60s Chunk Processing] 
     D --> E[FFmpeg Optimization]
-    E --> F[Storacha Upload]
+    E --> F[Lighthouse Upload]
     F --> G[Filecoin Network]
     G --> H[PDP Generation]
     H --> I[Metadata Compilation]
-    I --> J[IPFS Backup]
     
     style C fill:#ff6b6b
     style F fill:#4ecdc4
@@ -34,14 +33,14 @@ graph TB
 **Real-time Processing**:
 - **HLS Monitor**: Watches SRS output directory using `chokidar`
 - **Video Processor**: Combines segments into optimized chunks
-- **Upload Service**: Handles Storacha communication and retry logic
+- **Upload Service**: Handles Lighthouse communication and retry logic
 - **Metadata Service**: Compiles manifests and creates IPFS backups
 
 ## Service Architecture
 
 ### Core Components
 
-**StorageService**: Initializes HLSMonitor, VideoProcessor, StorachaClient, and MetadataService. startLivestreamStorage method configures monitoring and processing pipeline for specified eventId and creator with storage space preparation.
+**StorageService**: Initializes HLSMonitor, VideoProcessor, Lighthouse, and MetadataService. startLivestreamStorage method configures monitoring and processing pipeline for specified eventId and creator with storage space preparation.
 
 ### HLS Monitoring
 
@@ -111,74 +110,6 @@ const qualityPresets = {
 - **Format standardization** for consistent playback
 - **Metadata preservation** during transcoding
 
-## Storacha Integration
-
-### Client Configuration
-
-```typescript
-class StorachaClient {
-  async initialize() {
-    // Initialize w3up client with email authentication
-    this.client = await Client.create()
-    
-    // Login with configured email
-    await this.client.login(process.env.STORACHA_EMAIL)
-    
-    // Set working space
-    await this.client.setCurrentSpace(process.env.BUCKET_KEY)
-    
-    console.log('Storacha client initialized successfully')
-  }
-  
-  async uploadChunk(chunkId: string, filePath: string) {
-    try {
-      // Read file for upload
-      const file = fs.readFileSync(filePath)
-      
-      // Upload to Storacha with metadata
-      const cid = await this.client.uploadFile(file, {
-        name: `${chunkId}.mp4`,
-        metadata: {
-          eventId: this.extractEventId(chunkId),
-          chunkIndex: this.extractChunkIndex(chunkId),
-          duration: 60,
-          uploadTime: Date.now()
-        }
-      })
-      
-      // Generate CDN URLs
-      const filcdnUrl = `https://w3s.link/ipfs/${cid}`
-      const backupUrls = [
-        `https://${cid}.ipfs.w3s.link`,
-        `https://ipfs.io/ipfs/${cid}`
-      ]
-      
-      return { cid, filcdnUrl, backupUrls }
-    } catch (error) {
-      console.error('Upload failed:', error)
-      throw error
-    }
-  }
-}
-```
-
-### Proof of Data Possession
-
-**Automatic PDP Generation**:
-```typescript
-async function generatePDPReceipt(cid: string) {
-  // Storacha automatically generates PDP receipts
-  const receipts = await client.getReceipts(cid)
-  
-  return {
-    storageReceipt: receipts.storage,
-    shardInfo: receipts.shards,
-    dealCount: receipts.deals?.length || 0,
-    pdpVerified: receipts.storage?.status === 'verified'
-  }
-}
-```
-
 ## Metadata Management
 
 ### Chunk Metadata Structure
@@ -196,42 +127,6 @@ interface ChunkMetadata {
   pdpVerified: boolean
   dealCount: number
   uploadReceipt: any
-}
-```
-
-### Event Compilation
-
-**Manifest Creation**:
-```typescript
-class MetadataService {
-  async compileEventMetadata(eventId: string) {
-    const chunks = this.getEventChunks(eventId)
-    
-    const manifest = {
-      eventId,
-      totalChunks: chunks.length,
-      totalDuration: chunks.length * 60,
-      totalSize: chunks.reduce((sum, chunk) => sum + chunk.size, 0),
-      createdAt: Date.now(),
-      chunks: chunks.map(chunk => ({
-        chunkId: chunk.chunkId,
-        cid: chunk.cid,
-        url: chunk.filcdnUrl,
-        backupUrls: chunk.backupUrls,
-        duration: chunk.duration,
-        pdpVerified: chunk.pdpVerified
-      })),
-      playbackUrls: {
-        chunks: chunks.map(chunk => chunk.filcdnUrl),
-        manifestUrl: `https://haus.mypinata.cloud/ipfs/${this.manifestCid}`
-      }
-    }
-    
-    // Backup to Pinata IPFS
-    await this.backupToPinata(manifest)
-    
-    return manifest
-  }
 }
 ```
 
@@ -281,41 +176,6 @@ Content-Type: application/json
 }
 ```
 
-## Integration with Frontend
-
-### Lighthouse Service Hook
-
-```typescript
-// Frontend service integration
-const lighthouseService = useLighthouseService()
-
-// Start storage when creator begins streaming
-async function startLivestream(eventId: string, creator: string) {
-  const storageStarted = await lighthouseService.startLivestreamStorage(
-    eventId, 
-    creator
-  )
-  
-  if (storageStarted) {
-    console.log('Video storage started successfully')
-    startPolling() // Begin status updates
-  }
-}
-
-// Monitor upload progress
-async function pollStorageStatus(eventId: string) {
-  const status = await lighthouseService.getEventStorageStatus(eventId)
-  
-  if (status) {
-    updateUI({
-      chunksUploaded: status.uploadedChunks,
-      totalSize: status.totalSizeMB,
-      progress: status.uploadProgress
-    })
-  }
-}
-```
-
 ### Real-time Status Updates
 
 ```typescript
@@ -362,85 +222,12 @@ class PollingService {
 - **Retrieval costs**: Minimal for CDN-cached content
 - **Deal optimization**: Batch uploads for better pricing
 
-## Error Handling & Recovery
-
-### Failure Scenarios
-
-**Upload Failures**:
-```typescript
-async function uploadWithRetry(chunk: ChunkData, maxRetries = 3) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await this.storageClient.uploadChunk(chunk)
-    } catch (error) {
-      if (attempt === maxRetries) throw error
-      
-      const delay = Math.pow(2, attempt) * 1000 // Exponential backoff
-      await new Promise(resolve => setTimeout(resolve, delay))
-    }
-  }
-}
-```
-
 **Stream Interruption**:
 - **Graceful handling** of mid-stream disconnections
 - **Partial chunk processing** for incomplete segments
 - **Recovery mechanisms** for resumed streams
 - **Manual intervention** tools for edge cases
 
-### Monitoring & Alerting
-
-**Health Checks**:
-```typescript
-async function checkStorageHealth() {
-  return {
-    storageClient: await this.storageClient.ping(),
-    diskSpace: await this.checkDiskSpace(),
-    activeUploads: this.getActiveUploadCount(),
-    queueLength: this.getProcessingQueueLength()
-  }
-}
-```
-
-## Deployment & Operations
-
-### Docker Configuration
-
-```dockerfile
-FROM node:18-alpine
-
-RUN apk add --no-cache ffmpeg
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY . .
-
-CMD ["node", "app.js"]
-```
-
-### Environment Configuration
-
-```bash
-# Core settings
-PORT=3001
-NODE_ENV=production
-
-# Storacha configuration
-STORACHA_EMAIL=storage@haus25.live
-BUCKET_ALIAS=haus
-BUCKET_KEY=did:key:...
-
-# IPFS backup
-PINATA_JWT=eyJhbGc...
-PINATA_GATEWAY=haus.mypinata.cloud
-
-# Processing paths
-HLS_INPUT_PATH=/app/hls-input
-CHUNK_OUTPUT_PATH=/app/chunks
-TMP_PATH=/app/tmp
-```
 
 ### Monitoring Dashboard
 
