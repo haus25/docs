@@ -26,7 +26,6 @@
             "pages": [
               "core/what-is-haus",
               "core/rta-protocol-and-real-time-assets",
-              "core/performance-types",
               "core/factory",
               "core/kiosk",
               "core/autonomous-curation-agency",
@@ -39,7 +38,6 @@
               "infra/srs",
               "infra/storage",
               "infra/compression",
-              "infra/retrieval",
               "infra/xmtp"
             ]
           }

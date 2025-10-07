@@ -73,25 +73,13 @@ graph TB
 Frontend generates all streaming URLs using direct onchain scheduling, without backend coordination:
 
 ```typescript
-class StreamingService {
-  generateStreamUrls(eventId: string): StreamSession {
-    const sessionId = `event_${eventId}_${Date.now()}`
-    
-    return {
-      // WebRTC publishing (creator)
-      whipUrl: `https://room.haus25.live/rtc/v1/whip/?app=live&stream=${eventId}`,
-      
-      // WebRTC viewing (audience)  
-      whepUrl: `https://room.haus25.live/rtc/v1/whep/?app=live&stream=${eventId}`,
-      
-      // Fallback RTMP (OBS/streaming software)
-      streamUrl: `rtmp://room.haus25.live:1935/live/${eventId}`,
-      
-      // HTTP-FLV fallback viewing
-      playUrl: `https://room.haus25.live:8080/live/${eventId}.flv`,
-      
-      sessionId
-    }
+function generateStreamUrls(eventId: string) {
+  return {
+    streamUrl: `rtmp://room.haus25.live:1935/live/${eventId}`,
+    playUrl: `https://room.haus25.live:8080/live/${eventId}.flv`,
+    whipUrl: `https://room.haus25.live/rtc/v1/whip/?app=live&stream=${eventId}`,
+    whepUrl: `https://room.haus25.live/rtc/v1/whep/?app=live&stream=${eventId}`,
+    roomUrl: `https://haus25.live/room/${eventId}`
   }
 }
 ```

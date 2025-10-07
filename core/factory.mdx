@@ -141,22 +141,6 @@ Event metadata follows a standardized format uploaded to IPFS:
 }
 ```
 
-### Streaming URL Generation
-
-The Factory generates streaming URLs deterministically:
-
-```typescript
-function generateStreamUrls(eventId: string) {
-  return {
-    streamUrl: `rtmp://room.haus25.live:1935/live/${eventId}`,
-    playUrl: `https://room.haus25.live:8080/live/${eventId}.flv`,
-    whipUrl: `https://room.haus25.live/rtc/v1/whip/?app=live&stream=${eventId}`,
-    whepUrl: `https://room.haus25.live/rtc/v1/whep/?app=live&stream=${eventId}`,
-    roomUrl: `https://haus25.live/room/${eventId}`
-  }
-}
-```
-
 This approach eliminates backend dependencies while ensuring reliable streaming infrastructure.
 
 ## Creation Progress Tracking

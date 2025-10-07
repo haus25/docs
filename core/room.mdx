@@ -178,27 +178,6 @@ sequenceDiagram
 - **Event timing**: Only during live streaming
 - **Sufficient balance**: SEI balance + gas fees
 
-**Tipping Flow**:
-
-```typescript
-async function sendTip(eventId: string, amount: string, message: string) {
-  // 1. Validate event is tippable
-  const isTippable = await liveTipping.isEventTippable(eventId)
-  if (!isTippable) throw new Error('Event not accepting tips')
-  
-  // 2. Send tip transaction
-  const tx = await liveTipping.sendTip(eventId, message, {
-    value: parseEther(amount)
-  })
-  
-  // 3. Wait for confirmation
-  await tx.wait()
-  
-  // 4. Update UI with new tip
-  updateTipDisplay(eventId, amount, message)
-}
-```
-
 ### Tip Display
 
 **Real-time Updates**:
